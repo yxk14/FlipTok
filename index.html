@@ -1,0 +1,986 @@
+<title>FlipTok — Learn Languages Through Short Videos</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="FlipTok turns your daily scroll into daily language progress. Short YouTube videos, real speech, six languages.">
+
+<style>
+/* ─── Token system ───────────────────────────────────────────── */
+:root {
+  --white:        #FFFFFF;
+  --ash:          #F4F4F4;
+  --carbon:       #171A20;
+  --graphite:     #393C41;
+  --pewter:       #5C5E62;
+  --fog:          #8E8E8E;
+  --cloud:        #EEEEEE;
+  --pale-silver:  #D0D1D2;
+  --blue:         #3E6AE1;
+  --frost:        rgba(255, 255, 255, 0.75);
+
+  --font-display: -apple-system, Arial, sans-serif;
+  --font-text:    -apple-system, Arial, sans-serif;
+
+  --r-btn:  4px;
+  --r-card: 12px;
+  --r-phone: 40px;
+
+  --ease: cubic-bezier(0.5, 0, 0, 0.75);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--carbon);
+  font-family: var(--font-text);
+  font-size: 14px;
+  line-height: 1.43;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ─── Nav ────────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 52px;
+  background: transparent;
+  transition: background-color 0.33s var(--ease);
+}
+
+nav.scrolled {
+  background: var(--frost);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--carbon);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  padding: 4px 16px;
+  border-radius: var(--r-btn);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  transition: color 0.33s, background-color 0.33s;
+}
+.nav-links a:hover { background: rgba(23, 26, 32, 0.07); }
+
+.nav-cta {
+  background: var(--blue);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 16px;
+  min-height: 40px;
+  border-radius: var(--r-btn);
+  display: flex;
+  align-items: center;
+  border: 3px solid transparent;
+  transition: border-color 0.33s, background-color 0.33s, color 0.33s, box-shadow 0.25s;
+}
+.nav-cta:hover { background: #3460d4; }
+
+/* ─── Hero ───────────────────────────────────────────────────── */
+.hero {
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.hero-visual {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 52px;
+}
+
+/* Phone mockup ───────────────── */
+.phone {
+  width: 248px;
+  height: 534px;
+  background: var(--carbon);
+  border-radius: var(--r-phone);
+  border: 2px solid rgba(23, 26, 32, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
+  z-index: 10;
+}
+
+.phone-video {
+  position: absolute;
+  inset: 0;
+  background: #0f0f1a;
+  overflow: hidden;
+}
+
+.phone-video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(8,8,16,0.85) 100%);
+}
+
+.phone-video-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 40% 35%, rgba(62, 106, 225, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 65% 65%, rgba(15,52,96,0.35) 0%, transparent 80%);
+}
+
+.phone-lang-badge {
+  position: absolute;
+  top: 34px;
+  left: 14px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  z-index: 5;
+}
+
+.phone-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 180px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+.phone-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.phone-action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #fff;
+}
+.phone-action-icon.liked { background: rgba(62,106,225,0.3); color: var(--blue); }
+.phone-action-label {
+  font-size: 8px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+
+.phone-info {
+  position: absolute;
+  left: 12px;
+  bottom: 90px;
+  right: 58px;
+  z-index: 5;
+}
+.phone-channel {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.05em;
+  margin-bottom: 3px;
+}
+.phone-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.35;
+  max-width: 130px;
+}
+
+.phone-seeks {
+  position: absolute;
+  bottom: 54px;
+  left: 12px;
+  right: 58px;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+}
+.phone-seek {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  padding: 4px 7px;
+}
+
+.phone-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 12px;
+  right: 12px;
+  z-index: 5;
+  background: rgba(0,0,0,0.7);
+  border-radius: 4px;
+  padding: 5px 8px;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.4;
+}
+
+.phone-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--blue);
+  animation: progress 12s linear infinite;
+  z-index: 6;
+}
+@keyframes progress { from { width: 0; } to { width: 100%; } }
+
+/* Hero overlay text at bottom */
+.hero-text {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  padding: 48px 40px 56px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.97) 28%, var(--white) 55%);
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: normal;
+  color: var(--carbon);
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--blue);
+  margin-bottom: 32px;
+  line-height: 0.91;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 4px 32px;
+  min-height: 40px;
+  min-width: 200px;
+  border-radius: var(--r-btn);
+  border: 3px solid transparent;
+  transition: border-color 0.33s, background-color 0.33s, color 0.33s, box-shadow 0.25s;
+}
+.btn-primary:hover { background: #3460d4; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  color: var(--graphite);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 4px 32px;
+  min-height: 40px;
+  min-width: 160px;
+  border-radius: var(--r-btn);
+  border: 3px solid transparent;
+  transition: border-color 0.33s, background-color 0.33s, color 0.33s, box-shadow 0.25s;
+}
+.btn-secondary:hover { background: var(--ash); }
+
+/* ─── Feature viewport sections ──────────────────────────────── */
+.feature-section {
+  height: 100vh;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+}
+
+.feature-section:nth-child(odd) { background: var(--white); }
+.feature-section:nth-child(even) { background: var(--ash); }
+
+.feature-content {
+  max-width: 640px;
+}
+
+.feature-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--pewter);
+  margin-bottom: 24px;
+  letter-spacing: normal;
+}
+
+.feature-heading {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--carbon);
+  margin-bottom: 16px;
+}
+
+.feature-body {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--graphite);
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.feature-pills {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.fpill {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  border: 1px solid var(--pale-silver);
+  border-radius: var(--r-btn);
+  padding: 6px 20px;
+}
+
+/* ─── Languages section ──────────────────────────────────────── */
+.languages-section {
+  background: var(--ash);
+  padding: 96px 40px;
+}
+
+.languages-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--pewter);
+  margin-bottom: 8px;
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--carbon);
+  margin-bottom: 16px;
+}
+
+.section-body {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--graphite);
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0 auto 48px;
+}
+
+.languages-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+.lang-card {
+  background: var(--white);
+  border-radius: var(--r-card);
+  padding: 28px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.lang-native {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--carbon);
+}
+
+.lang-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--graphite);
+}
+
+.lang-hello {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--pewter);
+}
+
+/* ─── How it works ───────────────────────────────────────────── */
+.how-section {
+  padding: 96px 40px;
+  background: var(--white);
+}
+
+.how-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 64px;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  height: 1px;
+  background: var(--cloud);
+  z-index: 0;
+}
+
+.step {
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 1px solid var(--pale-silver);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--carbon);
+  margin: 0 auto 24px;
+}
+
+.step-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--carbon);
+  margin-bottom: 12px;
+}
+
+.step-desc {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--graphite);
+  line-height: 1.65;
+}
+
+.step-code {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--pewter);
+  background: var(--ash);
+  border-radius: var(--r-btn);
+  padding: 10px 14px;
+  line-height: 1.7;
+  text-align: left;
+  display: inline-block;
+}
+
+/* ─── Download CTA ───────────────────────────────────────────── */
+.download-section {
+  height: 100vh;
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+  background: var(--ash);
+}
+
+.download-title {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--carbon);
+  margin-bottom: 8px;
+}
+
+.download-sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--graphite);
+  margin-bottom: 40px;
+  line-height: 1.65;
+  max-width: 420px;
+}
+
+.install-box {
+  margin-top: 48px;
+  background: var(--white);
+  border-radius: var(--r-card);
+  padding: 36px 40px;
+  text-align: left;
+  max-width: 520px;
+  width: 100%;
+}
+
+.install-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pewter);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.install-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.install-list li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--graphite);
+  line-height: 1.55;
+}
+
+.install-list li .n {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ash);
+  color: var(--carbon);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.install-list li strong { color: var(--carbon); font-weight: 500; }
+.install-list a {
+  color: var(--blue);
+  box-shadow: 0 1px 0 var(--blue);
+  transition: box-shadow 0.33s var(--ease), color 0.33s;
+}
+.install-list a:hover { box-shadow: none; }
+
+/* ─── Footer ─────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--cloud);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: var(--white);
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--carbon);
+}
+
+footer p {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--pewter);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  nav .nav-links { display: none; }
+
+  .hero { height: auto; min-height: 100svh; }
+  .hero-title { font-size: 28px; }
+  .hero-subtitle { font-size: 17px; }
+
+  .hero-ctas { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { min-width: 240px; }
+
+  .phone { width: 200px; height: 430px; }
+
+  .feature-section { height: auto; padding: 80px 20px; }
+  .feature-heading { font-size: 28px; }
+
+  .languages-section { padding: 72px 20px; }
+  .section-heading { font-size: 28px; }
+  .languages-grid { grid-template-columns: repeat(3, 1fr); }
+
+  .how-section { padding: 72px 20px; }
+  .steps { grid-template-columns: 1fr; gap: 48px; }
+  .steps::before { display: none; }
+  .step { padding: 0; }
+
+  .download-section { height: auto; padding: 80px 20px; }
+  .download-title { font-size: 28px; }
+  .install-box { padding: 28px 20px; }
+
+  footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .languages-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ─── Motion ─────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .phone-progress { animation: none; }
+}
+</style>
+
+<!-- ─── Nav ─────────────────────────────────────────────────── -->
+<nav id="main-nav" aria-label="Main navigation">
+  <div class="nav-logo">FlipTok</div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#languages">Languages</a></li>
+    <li><a href="#how">How it works</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">Download APK</a>
+</nav>
+
+<!-- ─── Hero ─────────────────────────────────────────────────── -->
+<section class="hero" aria-label="Hero">
+
+  <div class="hero-visual" aria-hidden="true">
+    <div class="phone" role="img" aria-label="FlipTok app showing a Japanese language video">
+      <div class="phone-video">
+        <div class="phone-video-bg"></div>
+      </div>
+
+      <div class="phone-lang-badge">JA · Shorts</div>
+
+      <div class="phone-actions">
+        <div class="phone-action">
+          <div class="phone-action-icon liked">♥</div>
+          <span class="phone-action-label">Like</span>
+        </div>
+        <div class="phone-action">
+          <div class="phone-action-icon">CC</div>
+          <span class="phone-action-label">Captions</span>
+        </div>
+        <div class="phone-action">
+          <div class="phone-action-icon">½×</div>
+          <span class="phone-action-label">Speed</span>
+        </div>
+      </div>
+
+      <div class="phone-info">
+        <div class="phone-channel">NHK World Japan</div>
+        <div class="phone-title">東京の春の花見スポット紹介</div>
+      </div>
+
+      <div class="phone-seeks">
+        <div class="phone-seek">−3s</div>
+        <div class="phone-seek">−5s</div>
+        <div class="phone-seek">−7s</div>
+        <div class="phone-seek">↺</div>
+      </div>
+
+      <div class="phone-caption">東京で人気の花見スポットをご紹介します</div>
+      <div class="phone-progress"></div>
+    </div>
+  </div>
+
+  <div class="hero-text">
+    <div class="hero-title">Learn while you scroll.</div>
+    <div class="hero-subtitle">Six languages. Real YouTube Shorts.</div>
+    <div class="hero-ctas">
+      <a href="#download" class="btn-primary">Download Free</a>
+      <a href="#features" class="btn-secondary">See features</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── Features ──────────────────────────────────────────────── -->
+<section id="features" aria-label="Features">
+
+  <div class="feature-section">
+    <div class="feature-content">
+      <p class="feature-label">Subtitle control</p>
+      <h2 class="feature-heading">Captions on.<br>Captions off.</h2>
+      <p class="feature-body">One tap toggles subtitles directly from the video in the target language — no synthetic translation, no guessing.</p>
+    </div>
+  </div>
+
+  <div class="feature-section">
+    <div class="feature-content">
+      <p class="feature-label">Precision rewind</p>
+      <h2 class="feature-heading">Missed a phrase?<br>Jump back exactly.</h2>
+      <p class="feature-body">No scrubber hunting. Tap once to rewind the exact moment you need to hear again.</p>
+      <div class="feature-pills">
+        <span class="fpill">−3 s</span>
+        <span class="fpill">−5 s</span>
+        <span class="fpill">−7 s</span>
+        <span class="fpill">Replay</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-section">
+    <div class="feature-content">
+      <p class="feature-label">Slow playback</p>
+      <h2 class="feature-heading">Hear every sound<br>at your pace.</h2>
+      <p class="feature-body">Native speakers talk fast. Slow the video to catch the natural intonation you'd miss at full speed.</p>
+      <div class="feature-pills">
+        <span class="fpill">0.5×</span>
+        <span class="fpill">0.75×</span>
+        <span class="fpill">1×</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-section">
+    <div class="feature-content">
+      <p class="feature-label">Progress tracking</p>
+      <h2 class="feature-heading">Thirty days.<br>One clear picture.</h2>
+      <p class="feature-body">Your daily activity graph shows the streak forming — or shows where you dropped off, so you can pick back up.</p>
+    </div>
+  </div>
+
+  <div class="feature-section">
+    <div class="feature-content">
+      <p class="feature-label">Smart curation</p>
+      <h2 class="feature-heading">Your genre,<br>your length.</h2>
+      <p class="feature-body">Choose documentary, news, comedy, or instructional. Gemini AI ranks results for language-learning usefulness before they reach your feed.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── Languages ─────────────────────────────────────────────── -->
+<section id="languages" class="languages-section" aria-label="Supported languages">
+  <div class="languages-inner">
+    <p class="section-label">Languages</p>
+    <h2 class="section-heading">Six languages, one feed.</h2>
+    <p class="section-body">Switch any time in settings. FlipTok fetches Shorts in the language you're studying — not just results about it.</p>
+
+    <div class="languages-grid" role="list">
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="en">Aa</div>
+        <div class="lang-name">English</div>
+        <div class="lang-hello">"Hello"</div>
+      </div>
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="fr">Aa</div>
+        <div class="lang-name">French</div>
+        <div class="lang-hello">"Bonjour"</div>
+      </div>
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="de">Aa</div>
+        <div class="lang-name">German</div>
+        <div class="lang-hello">"Hallo"</div>
+      </div>
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="ja">日</div>
+        <div class="lang-name">Japanese</div>
+        <div class="lang-hello">"こんにちは"</div>
+      </div>
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="zh">中</div>
+        <div class="lang-name">Chinese</div>
+        <div class="lang-hello">"你好"</div>
+      </div>
+      <div class="lang-card" role="listitem">
+        <div class="lang-native" lang="ko">한</div>
+        <div class="lang-name">Korean</div>
+        <div class="lang-hello">"안녕하세요"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── How it works ──────────────────────────────────────────── -->
+<section id="how" class="how-section" aria-label="How to install">
+  <div class="how-inner">
+    <p class="section-label">How it works</p>
+    <h2 class="section-heading">Three minutes to your first lesson.</h2>
+    <p class="section-body">FlipTok ships as an Android APK — no app store required.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" aria-hidden="true">1</div>
+        <div class="step-title">Download the APK</div>
+        <p class="step-desc">Tap the button below to save <code>fliptok.apk</code> directly to your Android device.</p>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">2</div>
+        <div class="step-title">Allow unknown sources</div>
+        <p class="step-desc">Enable install permission for your browser in Settings. This is a one-time step.</p>
+        <div class="step-code">Settings → Apps → [browser]<br>→ Install unknown apps → Allow</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num" aria-hidden="true">3</div>
+        <div class="step-title">Choose your language</div>
+        <p class="step-desc">Open the file, tap Install, launch FlipTok, pick a target language, and start watching.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Download ──────────────────────────────────────────────── -->
+<section id="download" class="download-section" aria-label="Download FlipTok">
+
+  <p class="section-label" style="margin-bottom:8px;">Free download</p>
+  <h2 class="download-title">Start learning right now.</h2>
+  <p class="download-sub">No account. No subscriptions. Add your YouTube and Gemini API keys after installing.</p>
+
+  <a href="fliptok.apk" class="btn-primary" download aria-label="Download FlipTok APK for Android">Download FlipTok APK</a>
+
+  <div class="install-box" role="region" aria-label="Installation instructions">
+    <div class="install-label">Installation guide</div>
+    <ol class="install-list">
+      <li>
+        <span class="n" aria-hidden="true">1</span>
+        <span>Tap <strong>Download FlipTok APK</strong> above. Your browser saves <code>fliptok.apk</code> to Downloads.</span>
+      </li>
+      <li>
+        <span class="n" aria-hidden="true">2</span>
+        <span>Go to <strong>Settings → Apps → [your browser] → Install unknown apps</strong> and tap <strong>Allow</strong>.</span>
+      </li>
+      <li>
+        <span class="n" aria-hidden="true">3</span>
+        <span>Open Downloads, tap <strong>fliptok.apk</strong>, then tap <strong>Install</strong>.</span>
+      </li>
+      <li>
+        <span class="n" aria-hidden="true">4</span>
+        <span>Get a free <a href="https://console.cloud.google.com/" rel="noopener noreferrer">YouTube Data API v3 key</a> and a <a href="https://aistudio.google.com/app/apikey" rel="noopener noreferrer">Gemini API key</a>. Add them in <strong>Settings → API Keys</strong>.</span>
+      </li>
+      <li>
+        <span class="n" aria-hidden="true">5</span>
+        <span>Set your genre and length preferences, then start watching.</span>
+      </li>
+    </ol>
+  </div>
+
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">FlipTok</div>
+  <p>Android · YouTube Shorts · Language learning</p>
+  <p>&copy; 2026 FlipTok</p>
+</footer>
+
+<!-- ─── Nav scroll behavior ───────────────────────────────────── -->
+<script>
+(function() {
+  var nav = document.getElementById('main-nav');
+  function onScroll() {
+    if (window.scrollY > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
