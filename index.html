@@ -142,7 +142,7 @@ nav.scrolled{background:rgba(18,18,28,.82);backdrop-filter:blur(14px);border-bot
   box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.07);
   transition:transform .3s var(--ease)}
 .shot:hover{transform:translateY(-4px)}
-.shot img{display:block;width:100%;border-radius:27px}
+.shot img,.shot video{display:block;width:100%;border-radius:27px}
 .shot.sm{width:248px}
 @media(max-width:880px){.shot{width:262px}.shot.sm{width:240px}}
 
@@ -330,6 +330,7 @@ footer p{margin:3px 0}
   <a href="#top" class="brand"><span class="logo">🎬</span> FlipTok</a>
   <div class="nav-links">
     <a href="#features">Features</a>
+    <a href="#demo">Demo</a>
     <a href="#app">The App</a>
     <a href="#compare">Vs LangFlix</a>
     <a href="#how">Install</a>
@@ -362,6 +363,25 @@ footer p{margin:3px 0}
     </div>
   </div>
 </header>
+
+<!-- Demo video -->
+<section class="band alt" id="demo">
+  <div class="wrap">
+    <div class="center" style="max-width:720px">
+      <p class="label reveal">See it in action</p>
+      <h2 class="h2 reveal">A real session, start to finish.</h2>
+      <p class="sub reveal">Watch FlipTok pull a Short, drop in native captions, slow the speech down, and rewind the tricky part — all in a few taps.</p>
+    </div>
+    <div class="phone-stage reveal" style="margin-top:46px">
+      <div class="shot">
+        <video src="Screen_Recording_20260624_153113_FlipTok.mp4"
+               poster="Screenshot_20260624_150311_FlipTok.jpg"
+               controls autoplay muted loop playsinline preload="metadata"
+               aria-label="Screen recording of the FlipTok app in use"></video>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Features -->
 <section class="band" id="features">
